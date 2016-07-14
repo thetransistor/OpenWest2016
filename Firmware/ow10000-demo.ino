@@ -371,13 +371,6 @@ void loop() {
     text_temp =  "Battery: " + String(badge.battery_level())  + "%   ";
     scrollingText.setTextString(text_temp);
   }
-
-  if (badge.buttonU_debounce()){
-    
-    badge.clear();
-    draw();
-    
-  }
   
   if(badge.buttonR()){
     scrollingText.setScrollRate(35);  // Fast Scroll Rate
