@@ -263,7 +263,7 @@ void loop() {
 
 	if(badge.buttonD_debounce()){
 		badge.clear();
-		text_temp = String(badge.battery_level());
+		text_temp =  "Battery: " + String(badge.battery_level())  + "%   ";
 		scrollingText.setTextString(text_temp);
 	}
 	
