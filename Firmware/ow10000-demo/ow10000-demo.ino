@@ -46,7 +46,7 @@ const unsigned int E_TEXT2_START = 262;      // Offset for First Character of Te
 const unsigned int E_TEXT2_END = 518;        // Offset for Last Character of Text2
 
 const unsigned int SIGNATURE = 42;       // Signature
-const unsigned int VERSION = 1;          // Version
+const unsigned int VERSION = 2;          // Version
 
 String text1;  // String for button1 / default
 String text2;  // String for button2
