@@ -13,7 +13,9 @@ Standard Operation:
 - Main Function
     - Button 1 (Top Button): Display Scrolling Text 1
     - Button 2 (Bottom Button): Display Scrolling Text 2
-    - Hold Both Buttons: Enter Menu Mode
+    - Down button: Show battery percentage
+    - Hold Right Button: Fast scrolling
+    - Hold Both Buttons (1 and 2): Enter Menu Mode
 - Menu
     - Select an option using the Up and Down, Press button 1 to Select
 	- Current Menu options
