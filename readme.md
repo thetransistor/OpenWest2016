@@ -26,6 +26,7 @@ Standard Operation:
 		- 5) Tetris (under developement, check github for update code)
 		- 6) Nibble
 		- 7) Set Brightness (Lower saves Battery-Life)
+		- 8) Draw!
 		- 0) Exit Menu
 - Customize Text
 	- Use Left and Right to Select a Character Space
@@ -39,3 +40,8 @@ Standard Operation:
 - Set Brightness
 	- Use Up and Down to select the brightness you would like
 	- Press Button 1 to save the selected brightness
+- Draw!
+	- Use up, down, left and right to change cursor
+	- Use button 2 (bottom) to turn pixel on/off
+	- Press button 1 (top) to enable and disable scrolling.
+	- Hold both buttons to exit. (your drawing will NOT be saved!)
