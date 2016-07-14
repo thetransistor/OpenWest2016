@@ -257,9 +257,10 @@ void draw(){
   int screenBrightness = 2; // screen brightness, out of 15. the lower, the brighter
   int xPosition = 0; // positions of the cursor
   int yPosition = 0;
-  int canvasSizeX = 16;
+  int canvasSizeX = 17;
   int canvasSizeY = 16;
   int canvas[canvasSizeX][canvasSizeY];
+  bool scroll = false;
 
   // adjust brightness
   badge.setDropFrames(screenBrightness);
@@ -318,19 +319,7 @@ void draw(){
       xPosition++;
     } 
 
-    // turn pixel on or off
-    if(badge.buttonB_debounce()){
-
-        if(canvas[xPosition][yPosition] == pixelBrightness){
-          
-          canvas[xPosition][yPosition] = 0;
-          
-        }else{
-          canvas[xPosition][yPosition] = pixelBrightness;
-        }
-    }
-
-    // reset the canvas
+        // reset the canvas
     if (badge.buttonA_debounce(1500)){
       
       for (int x = 0; x < canvasSizeX; x++){
@@ -341,6 +330,92 @@ void draw(){
       }
       
     }
+
+
+    long lastUpdate = millis();
+    int updateSpeed = 85;
+    
+    while(scroll){
+      
+      if(millis() >= (lastUpdate + updateSpeed)){
+        
+        for (int x = 0; x <canvasSizeX; x++){
+          for (int y = 0; y <canvasSizeY; y++){
+
+          int newpos = x - 1;
+          if(newpos < 0)
+            newpos = 16;
+
+
+          badge.setPixel(newpos, y, canvas[x][y]);
+          badge.setPixel(x, y, 0);
+
+          lastUpdate = millis();
+          
+          canvas[newpos][y] = canvas[x][y];
+          canvas[x][y] = 0;
+          
+          
+         }
+        }
+
+        //lastUpdate = millis();
+        
+      }
+
+      
+
+     if (badge.buttonA_debounce()){
+      scroll = false;
+     }
+
+     if (badge.buttonR_debounce()){
+
+        updateSpeed = updateSpeed + 10;
+      
+     }
+      
+    }
+
+    // turn pixel on or off
+    if(badge.buttonB_debounce()){
+
+        if(canvas[xPosition][yPosition] == pixelBrightness | canvas[xPosition][yPosition] == pixelBrightness -1){
+          
+          canvas[xPosition][yPosition] = 0;
+          
+        }else{
+          canvas[xPosition][yPosition] = pixelBrightness;
+        }
+    }
+
+    if (badge.buttonA_debounce()){
+      
+      scroll = true;
+
+//      if (canvas[xPosition][yPosition] == pixelBrightness){
+//        canvas[xPosition][yPosition] = pixelBrightness - 1;
+//      }else if (canvas[xPosition][yPosition] == pixelBrightness -1){
+//        canvas[xPosition][yPosition] = pixelBrightness;
+//      }
+      
+    }
+    // shift 
+    if (badge.buttonB_debounce(800)){
+
+
+      
+     for (int x = 0; x <canvasSizeX; x++){
+      for (int y = 0; y <canvasSizeY; y++){
+         canvas[x-1][y] = canvas[x][y];
+         canvas [x][y] = 0;
+      }
+     }
+      
+    }
+    
+
+
     
   }
 
