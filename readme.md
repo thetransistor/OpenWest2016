@@ -3,6 +3,8 @@ Thanks to everyone for another fun year! :D
 
 ##Programming The Badge 
 - [Download and install the Arduino IDE](https://www.arduino.cc/en/Main/Software)
+  - Arch Linux: [Arch Wiki: Arduino#Installation](https://wiki.archlinux.org/index.php/Arduino#Installation)
+  - Ubuntu Linux: [Install Arduino on Ubuntu Linux](http://playground.arduino.cc/Linux/Ubuntu)
 - Connect the Badge Via a MicroUSB cable (you will need a low profile cable, or you may damage the connector)
 - Install the USB Drives
 - Select Tools->Board->Arduino Leonardo
@@ -23,7 +25,7 @@ Standard Operation:
 		- 2) Clear Text 1
 		- 3) Customize Text 2
 		- 4) Clear Text 2
-		- 5) Tetris (under developement, check github for update code)
+		- 5) Tetris (under development, check github for update code)
 		- 6) Nibble
 		- 7) Set Brightness (Lower saves Battery-Life)
 		- 0) Exit Menu
@@ -31,7 +33,7 @@ Standard Operation:
 	- Use Left and Right to Select a Character Space
 	- Use Up and Down to Select a Character
 	- Button 1 (Top Button) Saves Current Text
-	- Button 2 (Bottom Buttom) Deletes the Current Character
+	- Button 2 (Bottom Button) Deletes the Current Character
 - Nibble
 	- Eat those blocks. Ahhhh yisss!
 	- Hold Both Buttons (or die) to exit game
