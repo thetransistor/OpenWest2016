@@ -52,6 +52,9 @@ String text1;  // String for button1 / default
 String text2;  // String for button2
 String text_temp;  // String for misc
 
+int textSelectionPosition; // The selection location for the text mode
+bool resetText;
+
 // Initialize Stuffs. Mostly the timer interupt. Badge hardware is initialized in the badge library.
 void setup() {
 	// TIMER1 SETUP
@@ -74,6 +77,8 @@ void setup() {
 	scrollingText.setTextString(text1);
 
 	badge.clear();
+	textSelectionPosition = 0;
+	resetText = false;
 }
 
 
@@ -246,25 +251,57 @@ String stringEditor(String newText){
 	return newText;
 }
 
+void displayBatteryLevel() {
+	text_temp =  "B:" + String(badge.battery_level())  + "%  ";
+	scrollingText.setTextString(text_temp);
+}
+
+void handleScrollingText() {
+	if (badge.buttonA_debounce()) {
+		textSelectionPosition--;
+		resetText = true;
+	}
+	if (badge.buttonB_debounce()) {
+		textSelectionPosition++;
+		resetText = true;
+	}
+
+	if (textSelectionPosition < 0) {
+		textSelectionPosition = 0;
+	}
+	if (textSelectionPosition > 3) {
+		textSelectionPosition = 3;
+	}
+
+	if (resetText) {
+		badge.clear();
+		switch (textSelectionPosition) {
+			case 0:
+				scrollingText.setTextString(text1);
+				break;
+			case 1:
+				scrollingText.setTextString(text2);
+				break;
+			case 2:			
+				scrollingText.setTextString(text1 + " - " + text2);
+				break;
+			case 3:
+			default:
+				displayBatteryLevel();
+				break;
+		}
+		resetText = false;
+	}
+}
 
 // Infinity...
 void loop() {
 	scrollingText.update();
+	handleScrollingText();
 	
-	if(badge.buttonA_debounce()){
-		badge.clear();
-		scrollingText.setTextString(text1);
-	}
-	
-	if(badge.buttonB_debounce()){
-		badge.clear();
-		scrollingText.setTextString(text2);
-	}
-
 	if(badge.buttonD_debounce()){
 		badge.clear();
-		text_temp =  "B:" + String(badge.battery_level())  + "%  ";
-		scrollingText.setTextString(text_temp);
+		displayBatteryLevel();	
 	}
 	
 	if(badge.buttonR()){
