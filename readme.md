@@ -6,7 +6,7 @@ Thanks to everyone for another fun year! :D
 - Connect the Badge Via a MicroUSB cable (you will need a low profile cable, or you may damage the connector)
 - Install the USB Drives
 - Select Tools->Board->Arduino Leonardo
-- Get to programmin's!
+- [Get to programmin's!](https://www.arduino.cc/en/Tutorial/HomePage)
 
 ##Using the badge
 Standard Operation:
