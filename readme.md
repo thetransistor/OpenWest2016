@@ -41,5 +41,5 @@ Standard Operation:
 	- Press Button 1 to save the selected brightness
 
 ##Troubleshooting
-- Text freezes ore disappears
+- Text freezes or disappears
 	- Replace the batteries
