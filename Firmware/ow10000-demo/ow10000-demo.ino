@@ -268,9 +268,11 @@ void loop() {
 	}
 	
 	if(badge.buttonR()){
-		scrollingText.setScrollRate(35);  // Fast Scroll Rate
+		scrollingText.setScrollRate(35);      // Fast Scroll Rate
+	} else if(badge.buttonL()){
+	  scrollingText.setScrollRate(99999);   // Pause Scroll Rate
 	} else {
-		scrollingText.setScrollRate(65);  // Normal Scroll Rate
+		scrollingText.setScrollRate(65);      // Normal Scroll Rate
 	}
 	
 	// Ahh yeah, Menutime!
