@@ -27,12 +27,14 @@
 #include "ow10000-text.h"
 #include "ow10000-nibble.h"
 #include "ow10000-tetris.h"
+#include "ow10000-helicopter.h"
 #include <EEPROM.h>
 
 OW10000HAL badge;
 OW10000_text scrollingText(&badge);
 OW10000_tetris tetrisGame(&badge);
 OW10000_nibble nibbleGame(&badge);
+OW10000_helicopter copterGame(&badge);
 
 const unsigned int EEPROM_BYTES = 1024;      // Number of EEPROM bytes
 const unsigned int E_SIGNATURE = 0;          // Offset for Signature
@@ -44,6 +46,7 @@ const unsigned int E_TEXT1_END = 260;        // Offset for Last Character of Tex
 const unsigned int E_TEXT2_LENGTH = 261;     // Offset for Number of Characters stored for Text2
 const unsigned int E_TEXT2_START = 262;      // Offset for First Character of Text2
 const unsigned int E_TEXT2_END = 518;        // Offset for Last Character of Text2
+const unsigned int E_HELICOPTER_HIGH_SCORE = 519;  // Offset for Helicopter high score
 
 const unsigned int SIGNATURE = 42;       // Signature
 const unsigned int VERSION = 2;          // Version
@@ -51,6 +54,7 @@ const unsigned int VERSION = 2;          // Version
 String text1;  // String for button1 / default
 String text2;  // String for button2
 String text_temp;  // String for misc
+int helicopterHighScore;  // Personal Helicopter record
 
 // Initialize Stuffs. Mostly the timer interupt. Badge hardware is initialized in the badge library.
 void setup() {
@@ -88,6 +92,7 @@ void setupEEPROM(){
 		// Initialize
 		text1 = "";
 		text2 = "";
+    helicopterHighScore = 0;
 		
 		// Read in Frame Drop / Brightness / Battery Save / whatever you want to call it
 		badge.setDropFrames(EEPROM.read(E_BRIGHTNESS));
@@ -103,10 +108,18 @@ void setupEEPROM(){
 		for(int x = 0; x < temp; x++){
 			text2 += (char) EEPROM.read(E_TEXT2_START + x);
 		}
+
+    // Read helicopter high score
+    helicopterHighScore = EEPROM.read(E_HELICOPTER_HIGH_SCORE);
+    
 	} else {
 		// New Badge, Setup
 		text1 = "OpenWest 2016! ";
 		text2 = "github.com/theTransistor ";
+    
+    // Read helicopter high score
+    helicopterHighScore = 0;
+    EEPROM.write(E_HELICOPTER_HIGH_SCORE, (int) 0);
 		
 		// Write the current version / signature
 		EEPROM.write(E_SIGNATURE, (byte) SIGNATURE);
@@ -309,9 +322,19 @@ void loop() {
 			case(6):    // Play Nibble
 				nibbleGame.play();  // Play the nibbles!
 				scrollingText.setTextString(text1);
-				break;
+				break;  
+        
+      case(7):    // Play Helicopter
+        copterGame.play();  // Play the helicopter!
+        if(copterGame.getScore() > helicopterHighScore){
+          helicopterHighScore = copterGame.getScore();
+          EEPROM.write(E_HELICOPTER_HIGH_SCORE, (int) helicopterHighScore);
+        }
+        scrollingText.setTextString("Score:" + String(copterGame.getScore())+" High Score:" + String(helicopterHighScore) + "   ");
+        //scrollingText.setTextString(text1);
+        break;
 				
-			case(7):    // Set Brightness
+			case(8):    // Set Brightness
 				setBadgeBright();	
 				scrollingText.setTextString(text1);
 				break;
@@ -335,7 +358,8 @@ void loop() {
 // 4 - Clear Text 2
 // 5 - Play Tetris
 // 6 - Play Nibble
-// 7 - Set Brightness
+// 7 - Play Helicopter
+// 8 - Set Brightness
 unsigned int menu(){
 	long tempMillis;
 	
@@ -373,6 +397,8 @@ unsigned int menu(){
 
 		if(badge.buttonR()){
 			scrollingText.setScrollRate(35);  // Fast Scroll Rate
+		} else if(badge.buttonL()){
+		  scrollingText.setScrollRate(99999); // Pause Scroll Rate
 		} else {
 			scrollingText.setScrollRate(65);  // Normal Scroll Rate
 		}
@@ -391,7 +417,8 @@ void setMenuText(int textSelection) {
 	char menuText4[] = "4) Clear Text2   ";
 	char menuText5[] = "5) Tetris   ";
 	char menuText6[] = "6) Nibble   ";
-	char menuText7[] = "7) Set Brightness   ";
+  char menuText7[] = "7) Helicopter   ";
+	char menuText8[] = "8) Set Brightness   ";
 	char menuText0[] = "Exit Menu  ";
 	
 	switch (textSelection){
@@ -416,6 +443,9 @@ void setMenuText(int textSelection) {
 		case 7:
 			scrollingText.setTextString(menuText7);
 			break;
+    case 8:
+      scrollingText.setTextString(menuText8);
+      break;
 		case 0:
 		default:
 			scrollingText.setTextString(menuText0);
