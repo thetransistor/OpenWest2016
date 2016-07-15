@@ -39,3 +39,7 @@ Standard Operation:
 - Set Brightness
 	- Use Up and Down to select the brightness you would like
 	- Press Button 1 to save the selected brightness
+
+##Troubleshooting
+- Text freezes ore disappears
+	- Replace the batteries
