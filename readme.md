@@ -42,4 +42,4 @@ Standard Operation:
 
 ##Troubleshooting
 - Text freezes or disappears
-	- Replace the batteries
+	- Low Batteries - Replace the batteries
