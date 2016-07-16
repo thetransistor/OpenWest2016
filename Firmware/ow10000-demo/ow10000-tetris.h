@@ -32,10 +32,6 @@ class OW10000_tetris{
 
         void play();  // Start a game
         void reset(); // Reset variables, and start a new game
-
-        bool check_position(int x, int y, int rotation);
-        void settle();
-        void paint();
             
     private:    
         OW10000HAL* badge;     // Pointer to the badge instance
@@ -44,6 +40,10 @@ class OW10000_tetris{
         int block_x, block_y, block, rotation;
         long lastUpdate; // Game timer
         long gameSpeed;
+
+        bool check_position(int x, int y, int rotation);
+        void settle();
+        void paint();
 };
 
 
