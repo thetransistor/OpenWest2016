@@ -283,7 +283,7 @@ void handleScrollingText() {
 				scrollingText.setTextString(text2);
 				break;
 			case 2:			
-				scrollingText.setTextString(text1 + " - " + text2);
+				scrollingText.setTextString(text1 + "- " + text2 + "- ");
 				break;
 			case 3:
 			default:
@@ -317,22 +317,26 @@ void loop() {
 				text1 = stringEditor(text1);
 				saveText1();
 				scrollingText.setTextString(text1);
+				textSelectionPosition = 0;
 				break;
 			
 			case(2):    // Clear Text 1
 				text1 = "";
 				scrollingText.setTextString(text1);
+				textSelectionPosition = 0;
 				break;
 			
 			case(3):    // Customize Text 2
 				text2 = stringEditor(text2);
 				saveText2();
 				scrollingText.setTextString(text2);
+				textSelectionPosition = 1;
 				break;
 			
 			case(4):    // Clear Text 2
 				text2 = "";
 				scrollingText.setTextString(text2);
+				textSelectionPosition = 1;
 				break;
 			
 			case(5):    // Play Tetris
