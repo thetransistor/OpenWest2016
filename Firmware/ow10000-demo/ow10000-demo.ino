@@ -299,9 +299,8 @@ void loop() {
 				break;
 			
 			case(5):    // Play Tetris
-				//tetrisGame.play();
-				scrollingText.setTextString("coming soon to github.com/thetransistor update your badge! :P ");
-				//scrollingText.setTextString(text1);
+				tetrisGame.play();
+				scrollingText.setTextString(text1);
 				break;	
 				
 			case(6):    // Play Nibble
