@@ -13,11 +13,6 @@
 OW10000_tetris::OW10000_tetris(OW10000HAL* badgeToLinkTo) {
     badge = badgeToLinkTo;
     randomSeed(millis()); // See the "random" number generator
-}
-
-
-// Reset the game
-void OW10000_tetris::reset() {
     //I block
     blocks[0].num_rotations = 2;
     blocks[0].rotations[0] = {4, 1, {0b1111}};
@@ -85,13 +80,25 @@ void OW10000_tetris::reset() {
     blocks[6].rotations[3] = {2, 3, {0b01,
                                      0b11,
                                      0b01}};
+}
+
+
+// Reset the game
+void OW10000_tetris::reset() {
     //Initialize screen
-    for (int y = 0; y < TETRIS_HEIGHT; y++)
+    for (int y = 0; y < TETRIS_HEIGHT; y++) {
         rows[y] = 0;
+        badge->setPixel(TETRIS_WIDTH, y, 1);
+        for (int x = TETRIS_WIDTH + 1; x < 16; x++) {
+            badge->setPixel(x, y, 0);
+        }
+    }
     block_x = TETRIS_WIDTH / 2 - 1;
     block_y = 0;
     rotation = 0;
     block = random(7);
+    next_block = random(7);
+    draw_next();
     gameSpeed = 1000; //1 second to start with
 }
 
@@ -144,7 +151,9 @@ void OW10000_tetris::play() {
                 //Get new block ready
                 block_x = TETRIS_WIDTH / 2 - 1;
                 block_y = 0;
-                block = random(7);
+                block = next_block;
+                next_block = random(7);
+                draw_next();
                 rotation = 0;
                 if (!check_position(block_x, block_y, rotation)) {
                     //Game Over
@@ -177,6 +186,25 @@ void OW10000_tetris::paint()
             if (y + block_y >= TETRIS_HEIGHT) break;
             if (b.map[y] & (1 << x))
                 badge->setPixel(x + block_x, y + block_y, 3);
+        }
+    }
+}
+
+void OW10000_tetris::draw_next()
+{
+    //clear old one
+    for (int x = TETRIS_WIDTH + 1; x < 16; x++) {
+        for (int y = 1; y < 5; y++) {
+            badge->setPixel(x, y, 0);
+        }
+    }
+
+    //draw new one
+    BlockRotation &b = blocks[next_block].rotations[0];
+    for (int x = 0; x < b.width; x++) {
+        for (int y = 0; y < b.height; y++) {
+            if (b.map[y] & (1 << x))
+                badge->setPixel(x + TETRIS_WIDTH + 2, y + 1, 3);
         }
     }
 }
@@ -214,7 +242,7 @@ void OW10000_tetris::settle()
     while (!done) {
         done = true;
         for (int y = TETRIS_HEIGHT - 1; y >= 0; y--) {
-            if (rows[y] == 0xFFFF) {
+            if (rows[y] == SOLID_ROW) {
                 //This is where we would keep score if there were anywhere to display it
                 done = false;
                 for (int i = y; i > 0; i--) {

@@ -11,8 +11,9 @@
 #include "ow10000-hardware.h"
 #include "ow10000-text.h"
 
-#define TETRIS_WIDTH 16
+#define TETRIS_WIDTH 10
 #define TETRIS_HEIGHT 16
+#define SOLID_ROW ((1 << TETRIS_WIDTH) - 1)
 
 class BlockRotation {
     public:
@@ -38,12 +39,14 @@ class OW10000_tetris{
         Block blocks[7];
         unsigned short rows[TETRIS_HEIGHT];
         int block_x, block_y, block, rotation;
+        int next_block;
         long lastUpdate; // Game timer
         long gameSpeed;
 
         bool check_position(int x, int y, int rotation);
         void settle();
         void paint();
+        void draw_next();
 };
 
 
