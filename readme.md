@@ -13,8 +13,11 @@ Thanks to everyone for another fun year! :D
 ##Using the badge
 Standard Operation:
 - Main Function
-    - Button 1 (Top Button): Display Scrolling Text 1
-    - Button 2 (Bottom Button): Display Scrolling Text 2
+    - Button 1/2 (Top/Bottom Buttons): Alternate text selections 
+      - Display text 1
+      - Display text 2
+      - Display combined text 1 - 2 
+      - Display battery level
     - Down button: Show battery percentage
     - Hold Right Button: Fast scrolling
     - Hold Both Buttons (1 and 2): Enter Menu Mode
