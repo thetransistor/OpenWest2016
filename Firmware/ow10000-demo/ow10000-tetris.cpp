@@ -183,7 +183,7 @@ void OW10000_tetris::draw_next()
 //Validate that a block can occupy the specified position
 bool OW10000_tetris::check_position(int test_x, int test_y, int test_rotation)
 {
-    unsigned short b = blocks[block].rotations[rotation];
+    unsigned short b = blocks[block].rotations[test_rotation];
     for (int y = 0; y < 4; y++) {
         unsigned short row = (b >> (y * 4)) & 0xF;
         for (int x = 0; x < 4; x++) {
