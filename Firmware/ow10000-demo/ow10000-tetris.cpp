@@ -15,44 +15,25 @@ OW10000_tetris::OW10000_tetris(OW10000HAL* badgeToLinkTo) {
     badge = badgeToLinkTo;
     randomSeed(millis()); // See the "random" number generator
     //I block
-    blocks[0].num_rotations = 2;
-    blocks[0].rotations[0] = 0b1111;
-    blocks[0].rotations[1] = 0b0100010001000100;
+    blocks[0] = {2, 4, 2, {0b1111, 0b0100010001000100}};
 
     //J block
-    blocks[1].num_rotations = 4;
-    blocks[1].rotations[0] = 0b01110001;
-    blocks[1].rotations[1] = 0b001000100110;
-    blocks[1].rotations[2] = 0b01000111;
-    blocks[1].rotations[3] = 0b011001000100;
+    blocks[1] = {4, 3, 2, {0b10001110, 0b010001001100, 0b11100010, 0b110010001000}};
 
     //L block
-    blocks[2].num_rotations = 4;
-    blocks[2].rotations[0] = 0b01110100;
-    blocks[2].rotations[1] = 0b010001000110;
-    blocks[2].rotations[2] = 0b00010111;
-    blocks[2].rotations[3] = 0b011000100010;
+    blocks[2] = {4, 3, 2, {0b11101000, 0b100010001100, 0b00101110, 0b110001000100}};
 
     //O block
-    blocks[3].num_rotations = 1;
-    blocks[3].rotations[0] = 0b01100110;
+    blocks[3] = {1, 2, 2, {0b11001100}};
 
     //S block
-    blocks[4].num_rotations = 2;
-    blocks[4].rotations[0] = 0b00110110;
-    blocks[4].rotations[1] = 0b010001100010;
+    blocks[4] = {2, 3, 2, {0b01101100, 0b100011000100}};
 
     //Z block
-    blocks[5].num_rotations = 2;
-    blocks[5].rotations[0] = 0b01100011;
-    blocks[5].rotations[1] = 0b001001100100;
+    blocks[5] = {2, 3, 2, {0b11000110, 0b010011001000}};
 
     //T block
-    blocks[6].num_rotations = 4;
-    blocks[6].rotations[0] = 0b00100111;
-    blocks[6].rotations[1] = 0b010001100100;
-    blocks[6].rotations[2] = 0b01110010;
-    blocks[6].rotations[3] = 0b001001100010;
+    blocks[6] = {4, 3, 2, {0b01001110, 0b010011000100, 0b11100100, 0b100011001000}};
 }
 
 
@@ -100,8 +81,18 @@ void OW10000_tetris::play() {
             new_rotation = (rotation + 1) % blocks[block].num_rotations;
             pressed = true;
         }
+        if(badge->buttonA_debounce()){
+            new_rotation = rotation == 0 ? blocks[block].num_rotations - 1 : rotation - 1;
+            pressed = true;
+        }
         if(badge->buttonD_debounce()){
             new_y++;
+            pressed = true;
+        }
+        if(badge->buttonB_debounce()){
+            while (check_position(new_x, new_y + 1, new_rotation)) {
+                new_y++;
+            }
             pressed = true;
         }
         if (pressed && check_position(new_x, new_y, new_rotation)) {
@@ -157,11 +148,12 @@ void OW10000_tetris::paint()
 void OW10000_tetris::draw_block(int draw_x, int draw_y, int block_num, int rotation_num)
 {
     unsigned short b = blocks[block_num].rotations[rotation_num];
-    for (int y = 0; y < 4; y++) {
-        if (y + draw_y >= TETRIS_HEIGHT) break;
+    int w = (rotation_num & 1) ? blocks[block_num].height : blocks[block_num].width;
+    int h = (rotation_num & 1) ? blocks[block_num].width : blocks[block_num].height;
+    for (int y = 0; y < h; y++) {
         unsigned short row = (b >> (y * 4)) & 0xF;
-        for (int x = 0; x < 4; x++) {
-            if (BIT_CHECK(row, x))
+        for (int x = 0; x < w; x++) {
+            if (BIT_CHECK(row, 3 - x))
                 badge->setPixel(x + draw_x, y + draw_y, 3);
         }
     }
@@ -184,10 +176,12 @@ void OW10000_tetris::draw_next()
 bool OW10000_tetris::check_position(int test_x, int test_y, int test_rotation)
 {
     unsigned short b = blocks[block].rotations[test_rotation];
-    for (int y = 0; y < 4; y++) {
+    int w = (test_rotation & 1) ? blocks[block].height : blocks[block].width;
+    int h = (test_rotation & 1) ? blocks[block].width : blocks[block].height;
+    for (int y = 0; y < h; y++) {
         unsigned short row = (b >> (y * 4)) & 0xF;
-        for (int x = 0; x < 4; x++) {
-            if (!BIT_CHECK(row, x)) continue;
+        for (int x = 0; x < w; x++) {
+            if (!BIT_CHECK(row, 3 - x)) continue;
             if (x + test_x < 0 || x + test_x >= TETRIS_WIDTH) return false;
             if (y + test_y < 0 || y + test_y >= TETRIS_HEIGHT) return false;
             if (BIT_CHECK(rows[test_y + y], test_x + x)) return false;
@@ -201,10 +195,12 @@ void OW10000_tetris::settle()
 {
     //Mark the spaces where the current block in play sits
     unsigned short b = blocks[block].rotations[rotation];
-    for (int y = 0; y < 4; y++) {
+    int w = (rotation & 1) ? blocks[block].height : blocks[block].width;
+    int h = (rotation & 1) ? blocks[block].width : blocks[block].height;
+    for (int y = 0; y < h; y++) {
         unsigned short row = (b >> (y * 4)) & 0xF;
-        for (int x = 0; x < 4; x++) {
-            if (BIT_CHECK(row, x)) {
+        for (int x = 0; x < w; x++) {
+            if (BIT_CHECK(row, 3 - x)) {
                 BIT_SET(rows[y + block_y], x + block_x);
             }
         }

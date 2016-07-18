@@ -17,7 +17,7 @@
 
 class Block {
     public:
-        int num_rotations;
+        unsigned char num_rotations, width, height;
         unsigned short rotations[4];
 };
 
