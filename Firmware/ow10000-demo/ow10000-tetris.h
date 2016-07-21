@@ -15,16 +15,10 @@
 #define TETRIS_HEIGHT 16
 #define SOLID_ROW ((1 << TETRIS_WIDTH) - 1)
 
-class BlockRotation {
-    public:
-        int width, height;
-        unsigned short map[4];
-};
-
 class Block {
     public:
-        int num_rotations;
-        BlockRotation rotations[4];
+        unsigned char num_rotations, width, height;
+        unsigned short rotations[4];
 };
 
 class OW10000_tetris{
@@ -47,6 +41,7 @@ class OW10000_tetris{
         void settle();
         void paint();
         void draw_next();
+        void draw_block(int draw_x, int draw_y, int block_num, int rotation_num);
 };
 
 
